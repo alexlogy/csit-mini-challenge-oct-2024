@@ -1,0 +1,21 @@
+FROM python:3.12-slim-bookworm
+LABEL program="Program 2"
+LABEL description="CSIT OCT 2024 MINI CHALLENGE"
+LABEL author="alexlogy"
+LABEL github="https://github.com/alexlogy/"
+
+# Environment Variables
+ENV INPUT_FILE="/data/validated/validated_dataset.json"
+ENV OUTPUT_DIR="/data/output/"
+
+# Set working directory to /app
+WORKDIR /app
+
+# Copy the code into the image
+COPY ../program_two /app
+
+# Installing Python Dependencies
+RUN pip install -r requirements.txt
+
+# Entrypoint
+ENTRYPOINT ["python", "main.py"]
