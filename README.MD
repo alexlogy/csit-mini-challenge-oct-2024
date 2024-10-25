@@ -99,24 +99,24 @@ docker build -t program_two:latest -f .docker/Dockerfile_ProgramTwo .
 
 *For mac*
 ```bash
-docker run -it -v /tmp/data:/app/data program_one:latest
+docker run -it -v /tmp/data:/data program_one:latest
 ```
 
 *For Windows*
 ```bash
-docker run -it -v ${pwd}/data:/app/data program_one:latest
+docker run -it -v ${pwd}/data:/data program_one:latest
 ```
 
 ### Program 2
 
 *For mac*
 ```bash
-docker run -it -v /tmp/data:/app/data program_two:latest
+docker run -it -v /tmp/data:/data program_two:latest
 ```
 
 *For Windows*
 ```bash
-docker run -it -v ${pwd}/data:/app/data program_two:latest
+docker run -it -v ${pwd}/data:/data program_two:latest
 ```
 
 ## Test

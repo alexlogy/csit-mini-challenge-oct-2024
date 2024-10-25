@@ -15,7 +15,7 @@ WORKDIR /app
 COPY ../program_two /app
 
 # Installing Python Dependencies
-RUN pip install -r requirements.txt
+RUN mkdir -p /data && pip install -r requirements.txt
 
 # Entrypoint
 ENTRYPOINT ["python", "main.py"]
