@@ -1,23 +1,70 @@
+from datetime import datetime, timezone, timedelta
 import math
 import json
 import os
 import logging
+import requests
+import time
 
 # Logging Configuration
 logger = logging.getLogger("[Program 2]")
-logging.basicConfig(level=logging.INFO)
+# Only log INFO and above, skip DEBUG
+logger.setLevel(logging.INFO)
+# Use a StreamHandler for console output - faster than FileHandler
+console_handler = logging.StreamHandler()
+# Use a simple formatter - faster than verbose formatting
+formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+# Remove the root logger handler to avoid duplicate logs
+logger.propagate = False
 
 # Global Variables
+if "API_URL" in os.environ:
+    BASE_URL = os.environ['API_URL']
+else:
+    BASE_URL = "https://u8whitimu7.execute-api.ap-southeast-1.amazonaws.com/prod/"
 MAX_SIZE = 10
 if "INPUT_FILE" in os.environ:
     INPUT_FILE = os.environ['INPUT_FILE']
 else:
-    INPUT_FILE = '../program_one/validated/validated_dataset.json'
+    INPUT_FILE = 'validated/validated_dataset.json'
 if "OUTPUT_DIR" in os.environ:
     OUTPUT_DIR = os.environ['OUTPUT_DIR']
 else:
     # for local dev environment testing
     OUTPUT_DIR = 'output'
+
+class APIClient:
+    def __init__(self):
+        self.token = None
+        self.token_expiry = None
+
+    def get_auth_token(self):
+        response = requests.get(BASE_URL + '/register')
+
+        if response.status_code == 200:
+            json_response = response.json()
+            self.token = json_response['data']['authorizationToken']
+            self.token_expiry = datetime.strptime(json_response['data']['tokenExpiryAt'], "%Y-%m-%d %H:%M:%S%z")
+        else:
+            logger.error("Failed to get auth token")
+
+    def is_token_valid(self):
+        if self.token and self.token_expiry:
+            return datetime.now(timezone(timedelta(hours=8))) < self.token_expiry
+        return False
+
+    def make_request(self, method, url, **kwargs):
+        if not self.is_token_valid():
+            self.get_auth_token()
+
+        headers = kwargs.get('headers', {})
+        headers['authorizationToken'] = self.token
+        kwargs['headers'] = headers
+
+        response = requests.request(method, url, **kwargs)
+        return response
 
 # Class for managing the Min-Heap
 class MinHeap:
@@ -135,6 +182,29 @@ def save_results(top_restaurants, output_file):
     logger.info(f"Top 10 restaurants saved to {output_file}!")
 
 
+def check_data_validation(file_path):
+    """Validate the data using the API's validation endpoint."""
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    payload = {
+        "data": data
+    }
+
+    try:
+        response = api_client.make_request('POST', BASE_URL + '/test/check-topk-sort', headers=headers,
+                                           json=payload)
+        response.raise_for_status()
+        logger.info(f"API Response (/test/check-topk-sort): {response.text}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error in request: {str(e)}")
+
+
+# main method
 def main():
     # load the cleaned dataset from the JSON file
     output_file = os.path.join(OUTPUT_DIR, 'topk_results.json')
@@ -148,9 +218,17 @@ def main():
 
     # Process and get top 10 restaurants
     top_restaurants = process_top_restaurants(data)
+
     # save the results
     save_results(top_restaurants, output_file)
 
+    # validate the results
+    check_data_validation(output_file)
+
 
 if __name__ == '__main__':
+    # initialize API client
+    logger.info("Initializing API Client..")
+    api_client = APIClient()
+
     main()

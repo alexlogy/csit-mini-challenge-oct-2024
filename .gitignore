@@ -289,8 +289,4 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
 
 # Custom Gitignore for this Project
-*/cleaned/*
-*/datasets/*
-*/validated/*
-*/output/*
-data/*
+validated/*

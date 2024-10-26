@@ -6,8 +6,6 @@ LABEL github="https://github.com/alexlogy/"
 
 # Environment Variables
 ENV API_URL="https://u8whitimu7.execute-api.ap-southeast-1.amazonaws.com/prod"
-ENV OUTPUT_DIR="/data/output/"
-ENV CLEAN_DIR="/data/cleaned/"
 ENV VALIDATED_DIR="/data/validated/"
 
 # Set working directory to /app

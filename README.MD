@@ -84,13 +84,26 @@ The output of the JSON file should be in the following structure.
 
 ### Program 1
 
+*For local dev environment*
 ```bash
 docker build -t program_one:latest -f .docker/Dockerfile_ProgramOne .
 ```
 
+*For publishing to Dockerhub on MacOS (ARM)*
+```bash
+docker buildx build -f .docker/Dockerfile_ProgramOne --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag alexlogy/csit-mini-challenge-oct-2024:program-one-latest .
+```
+
 ### Program 2
+
+*For local dev environment*
 ```bash
 docker build -t program_two:latest -f .docker/Dockerfile_ProgramTwo .
+```
+
+*For publishing to Dockerhub on MacOS (ARM)*
+```bash
+docker buildx build -f .docker/Dockerfile_ProgramTwo --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag alexlogy/csit-mini-challenge-oct-2024:program-two-latest .
 ```
 
 ## Run
@@ -99,24 +112,24 @@ docker build -t program_two:latest -f .docker/Dockerfile_ProgramTwo .
 
 *For mac*
 ```bash
-docker run -it -v /tmp/data:/data program_one:latest
+docker run -it -v /tmp/data:/data alexlogy/csit-mini-challenge-oct-2024:program-one-latest
 ```
 
 *For Windows*
 ```bash
-docker run -it -v ${pwd}/data:/data program_one:latest
+docker run -it -v ${pwd}/data:/data alexlogy/csit-mini-challenge-oct-2024:program-one-latest
 ```
 
 ### Program 2
 
 *For mac*
 ```bash
-docker run -it -v /tmp/data:/data program_two:latest
+docker run -it -v /tmp/data:/data alexlogy/csit-mini-challenge-oct-2024:program-two-latest
 ```
 
 *For Windows*
 ```bash
-docker run -it -v ${pwd}/data:/data program_two:latest
+docker run -it -v ${pwd}/data:/data alexlogy/csit-mini-challenge-oct-2024:program-two-latest
 ```
 
 ## Test
@@ -125,6 +138,7 @@ docker run -it -v ${pwd}/data:/data program_two:latest
 
 > POST /test/check-data-validation
 
+*Post Body: validated_dataset.json*
 ```json
 [
     {
@@ -155,25 +169,14 @@ docker run -it -v ${pwd}/data:/data program_two:latest
 ]
 ```
 
-Result: 413 Request entity too large
+Result: Success
 ```json
 {
-    "message": "Request Too Long"
+  "status": 200, 
+  "error": "", 
+  "message": "Success!"
 }
 ```
-
-*Comments:*
-
-*I don't know why I'm unable to validate this part. Based on the 
-API description, I'm supposed to "Submit the final results from 
-Program 1 to validate against. Use this API to test your program 
-before submitting".*
-
-*There are total of 5 pages of datasets. If I combined all 5 pages
-and cleaned the data, I will still get around 6.58MB of json data..
-thus the 413 error.*
-
-*It will be good if there's more information provided on this.*
 
 ### Program 2
 
@@ -257,6 +260,7 @@ POST Body: Final sorted dataset
 }
 ```
 
+*Result: Success*
 ```json
 {
     "status": 200,
