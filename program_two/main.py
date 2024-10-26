@@ -6,9 +6,8 @@ import logging
 import requests
 import time
 
-# Logging Configuration
+# logging Configuration
 logger = logging.getLogger("[Program 2]")
-# Only log INFO and above, skip DEBUG
 logger.setLevel(logging.INFO)
 # Use a StreamHandler for console output - faster than FileHandler
 console_handler = logging.StreamHandler()
@@ -16,7 +15,6 @@ console_handler = logging.StreamHandler()
 formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
-# Remove the root logger handler to avoid duplicate logs
 logger.propagate = False
 
 # Global Variables
@@ -28,12 +26,12 @@ MAX_SIZE = 10
 if "INPUT_FILE" in os.environ:
     INPUT_FILE = os.environ['INPUT_FILE']
 else:
-    INPUT_FILE = 'validated/validated_dataset.json'
+    INPUT_FILE = 'validated_dataset.json'
 if "OUTPUT_DIR" in os.environ:
     OUTPUT_DIR = os.environ['OUTPUT_DIR']
 else:
     # for local dev environment testing
-    OUTPUT_DIR = 'output'
+    OUTPUT_DIR = './'
 
 class APIClient:
     def __init__(self):
@@ -66,7 +64,7 @@ class APIClient:
         response = requests.request(method, url, **kwargs)
         return response
 
-# Class for managing the Min-Heap
+# obj for managing the Min-Heap
 class MinHeap:
     def __init__(self, max_size):
         self.heap = []
@@ -105,6 +103,15 @@ class MinHeap:
         left = 2 * index + 1    # left child index
         right = 2 * index + 2   # right child index
 
+        def compare_restaurants(a, b):
+            if a['score'] != b['score']:
+                return a['score'] < b['score']
+            if a['rating'] != b['rating']:
+                return a['rating'] < b['rating']
+            if a['distance_from_me'] != b['distance_from_me']:
+                return a['distance_from_me'] < b['distance_from_me']
+            return a['restaurant_name'] > b['restaurant_name']
+
         # check if the left child is smaller than the current node
         if left < heap_size and self.heap[left]['score'] < self.heap[smallest]['score']:
             smallest = left
@@ -130,6 +137,16 @@ class MinHeap:
 
         # maintain heap property upwards
         i = len(self.heap) - 1
+
+        def compare_restaurants(a, b):
+            if a['score'] != b['score']:
+                return a['score'] < b['score']
+            if a['rating'] != b['rating']:
+                return a['rating'] < b['rating']
+            if a['distance_from_me'] != b['distance_from_me']:
+                return a['distance_from_me'] < b['distance_from_me']
+            return a['restaurant_name'] > b['restaurant_name']
+
         while i > 0 and self.heap[i]['score'] < self.heap[(i - 1) // 2]['score']:
             # swap with parent if the current score is smaller
             self.heap[i], self.heap[(i - 1) // 2] = self.heap[(i - 1) // 2], self.heap[i]
@@ -141,17 +158,27 @@ class MinHeap:
             self.heapify(0, len(self.heap))  # restore heap property from the root element down
 
     def get_top_k(self):
-        """
-        returns the top K restaurants sorted by score.
-        Since the heap is only partially sorted (smallest on top), we sort
-        the heap before returning the top entries.
-        """
-        self.heap.sort(key=lambda x: x['score'], reverse=True)
+        '''
+        sort the cleaned data from program 1 according to the following criteria, in order of priority:
+        1. Score (Sort in descending order)
+        2. Rating (Sort in descending order)
+        3. Distance (Sort in descending order)
+        4. Restaurant name (Sort alphabetically in ascending order)
+        '''
+        def custom_sort_key(restaurant):
+            return (
+                restaurant['score'],  # sort by score (descending)
+                restaurant['rating'],  # sort by rating (descending)
+                restaurant['distance_from_me'],  # sort by distance (descending)
+                -ord(restaurant['restaurant_name'][0])  # sort by restaurant name (ascending)
+            )
 
+        # sort the heap using the custom sorting function above
+        self.heap.sort(key=custom_sort_key, reverse=True)
         return self.heap
 
 
-# Function to load the restaurant data, process, and save top 10 results
+# method to load the restaurant data, process, and save top 10 results
 def process_top_restaurants(data):
     """
     processes the restaurant data to find the top 10 restaurants based on the
@@ -175,7 +202,7 @@ def process_top_restaurants(data):
     return top_restaurants
 
 def save_results(top_restaurants, output_file):
-    # Save the top restaurants to a JSON file
+    # save the top restaurants to topk_results.json file
     with open(output_file, 'w') as f:
         json.dump(top_restaurants, f, indent=4)
 
@@ -216,7 +243,7 @@ def main():
     with open(INPUT_FILE, 'r') as file:
         data = json.load(file)
 
-    # Process and get top 10 restaurants
+    # process and get top 10 restaurants
     top_restaurants = process_top_restaurants(data)
 
     # save the results
@@ -231,4 +258,5 @@ if __name__ == '__main__':
     logger.info("Initializing API Client..")
     api_client = APIClient()
 
+    # run the main method
     main()

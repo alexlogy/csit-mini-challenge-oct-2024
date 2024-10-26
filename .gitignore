@@ -290,3 +290,7 @@ pyrightconfig.json
 
 # Custom Gitignore for this Project
 validated/*
+program_two/topk_results.json
+
+.idea
+.DS_Store
