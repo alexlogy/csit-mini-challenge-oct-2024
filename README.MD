@@ -80,6 +80,20 @@ The output of the JSON file should be in the following structure.
 ]
 ```
 
+### Solution
+
+The sorting algorithm needs to follow the following requirements:
+
+The expected time and space complexity for this program are as follows:
+- Time complexity: O(N log K)
+- Space complexity: O(K)
+
+*Where K = 10 and N is an integer within the range [1...5,000,000].*
+
+Thus, the way to do it will be to use a heap sort with min-heap.
+
+https://www.geeksforgeeks.org/heap-data-structure/
+
 ## Build
 
 ### Program 1
@@ -107,6 +121,9 @@ docker buildx build -f .docker/Dockerfile_ProgramTwo --push --platform linux/arm
 ```
 
 ## Run
+
+*Link to Docker Hub Repository*
+> Docker Hub: [Repository - alexlogy/csit-mini-challenge-oct-2024](https://hub.docker.com/repository/docker/alexlogy/csit-mini-challenge-oct-2024)
 
 ### Program 1
 
@@ -256,3 +273,13 @@ POST Body: Final sorted dataset
     "message": "Success! Results matched"
 }
 ```
+
+## Submission Result
+
+> Submission Result
+
+![final-submission.png](badge/final-submission.png)
+
+> Badge
+
+![minichall-softwarebadge.png](badge/minichall-softwarebadge.png)
