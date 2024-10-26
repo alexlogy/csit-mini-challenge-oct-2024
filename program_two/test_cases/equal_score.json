@@ -1,0 +1,22 @@
+[
+  {"id": 1, "restaurant_name": "Zesty Kitchen", "rating": 4.9, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 2, "restaurant_name": "Yellow Plate", "rating": 4.8, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 3, "restaurant_name": "Xiao's Cuisine", "rating": 4.7, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 4, "restaurant_name": "Wholesome Foods", "rating": 4.6, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 5, "restaurant_name": "Veggie Delight", "rating": 4.5, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 6, "restaurant_name": "Urban Spice", "rating": 4.4, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 7, "restaurant_name": "Tasty Corner", "rating": 4.3, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 8, "restaurant_name": "Sushi Master", "rating": 4.2, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 9, "restaurant_name": "Royal Feast", "rating": 4.1, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 10, "restaurant_name": "Quick Bites", "rating": 4.0, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 11, "restaurant_name": "Pizza Palace", "rating": 3.9, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 12, "restaurant_name": "Ocean Delicacy", "rating": 3.8, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 13, "restaurant_name": "Noodle House", "rating": 3.7, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 14, "restaurant_name": "Mediterranean Grill", "rating": 3.6, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 15, "restaurant_name": "Local Flavors", "rating": 3.5, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 16, "restaurant_name": "Korean BBQ", "rating": 3.4, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 17, "restaurant_name": "Japanese Fusion", "rating": 3.3, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 18, "restaurant_name": "Italian Corner", "rating": 3.2, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 19, "restaurant_name": "Health Hub", "rating": 3.1, "distance_from_me": 2.0, "score": 95.00},
+  {"id": 20, "restaurant_name": "Green Garden", "rating": 3.0, "distance_from_me": 2.0, "score": 95.00}
+]

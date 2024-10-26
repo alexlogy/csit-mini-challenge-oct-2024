@@ -1,4 +1,5 @@
 from datetime import datetime, timezone, timedelta
+from typing import Dict, List
 import math
 import json
 import os
@@ -90,116 +91,90 @@ class MinHeap:
         restaurant["score"] = final_score
         return final_score
 
-    def heapify(self, index, heap_size):
+    def compare_restaurants(self, a: Dict, b: Dict) -> bool:
         """
-        restores the min-heap property by ensuring the smallest element
-        is always at the root. This method compares the current node with
-        its children and swaps them if necessary, then recurses down the heap.
-
-        param index: index of the current node
-        param heap_size: size of the heap
+        Returns True if restaurant a should be considered "smaller" than restaurant b
+        for min heap purposes. Remember we want to keep the largest values.
         """
-        smallest = index
-        left = 2 * index + 1    # left child index
-        right = 2 * index + 2   # right child index
+        if a['score'] != b['score']:
+            return a['score'] < b['score']
+        if a['rating'] != b['rating']:
+            return a['rating'] < b['rating']
+        if a['distance_from_me'] != b['distance_from_me']:
+            return a['distance_from_me'] < b['distance_from_me']
+        return a['restaurant_name'] > b['restaurant_name']
 
-        def compare_restaurants(a, b):
-            if a['score'] != b['score']:
-                return a['score'] < b['score']
-            if a['rating'] != b['rating']:
-                return a['rating'] < b['rating']
-            if a['distance_from_me'] != b['distance_from_me']:
-                return a['distance_from_me'] < b['distance_from_me']
-            return a['restaurant_name'] > b['restaurant_name']
+    def heapify_up(self, index: int) -> None:
+        """O(log K) operation to maintain heap property upwards"""
+        parent = (index - 1) // 2
+        while index > 0 and self.compare_restaurants(self.heap[index], self.heap[parent]):
+            self.heap[index], self.heap[parent] = self.heap[parent], self.heap[index]
+            index = parent
+            parent = (index - 1) // 2
 
-        # check if the left child is smaller than the current node
-        if left < heap_size and self.heap[left]['score'] < self.heap[smallest]['score']:
-            smallest = left
-        # check if the right child is smaller than the current node
-        if right < heap_size and self.heap[right]['score'] < self.heap[smallest]['score']:
-            smallest = right
+    def heapify_down(self, index: int) -> None:
+        """O(log K) operation to maintain heap property downwards"""
+        min_index = index
+        size = len(self.heap)
 
-        if smallest != index:
-            self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
-            self.heapify(smallest, heap_size)
+        while True:
+            left = 2 * index + 1
+            right = 2 * index + 2
 
-    def add(self, restaurant):
-        """
-        adds a new restaurant to the heap and maintains the heap property. If the heap exceeds
-        the maximum size (10), the smallest element is removed to keep only the top 10 entries.
+            if left < size and self.compare_restaurants(self.heap[left], self.heap[min_index]):
+                min_index = left
+            if right < size and self.compare_restaurants(self.heap[right], self.heap[min_index]):
+                min_index = right
 
-        param restaurant: restaurant data
-        """
+            if min_index == index:
+                break
 
-        # calculate the score for the restaurant and add it to the heap
+            self.heap[index], self.heap[min_index] = self.heap[min_index], self.heap[index]
+            index = min_index
+
+    def add(self, restaurant: Dict) -> None:
+        """O(log K) operation to add a new restaurant"""
+        # Calculate score first
         self.calculate_score(restaurant)
-        self.heap.append(restaurant)
 
-        # maintain heap property upwards
-        i = len(self.heap) - 1
+        if len(self.heap) < self.max_size:
+            # If heap is not full, add and heapify up
+            self.heap.append(restaurant)
+            self.heapify_up(len(self.heap) - 1)
+        else:
+            # If heap is full, only add if better than current minimum
+            if not self.compare_restaurants(restaurant, self.heap[0]):
+                self.heap[0] = restaurant
+                self.heapify_down(0)
 
-        def compare_restaurants(a, b):
-            if a['score'] != b['score']:
-                return a['score'] < b['score']
-            if a['rating'] != b['rating']:
-                return a['rating'] < b['rating']
-            if a['distance_from_me'] != b['distance_from_me']:
-                return a['distance_from_me'] < b['distance_from_me']
-            return a['restaurant_name'] > b['restaurant_name']
+    def get_top_k(self) -> List[Dict]:
+        """O(K log K) operation to sort final results"""
+        # Sort by our criteria in reverse order
+        return sorted(
+            self.heap,
+            key=lambda x: (
+                x['score'],
+                x['rating'],
+                x['distance_from_me'],
+                x['restaurant_name']
+            ),
+            reverse=True
+        )
 
-        while i > 0 and self.heap[i]['score'] < self.heap[(i - 1) // 2]['score']:
-            # swap with parent if the current score is smaller
-            self.heap[i], self.heap[(i - 1) // 2] = self.heap[(i - 1) // 2], self.heap[i]
-            i = (i - 1) // 2    # move up to the parent
-
-        # remove smallest element if heap exceeds max size
-        if len(self.heap) > self.max_size:
-            self.heap[0] = self.heap.pop()  # replace root element with last element and pop last element
-            self.heapify(0, len(self.heap))  # restore heap property from the root element down
-
-    def get_top_k(self):
-        '''
-        sort the cleaned data from program 1 according to the following criteria, in order of priority:
-        1. Score (Sort in descending order)
-        2. Rating (Sort in descending order)
-        3. Distance (Sort in descending order)
-        4. Restaurant name (Sort alphabetically in ascending order)
-        '''
-        def custom_sort_key(restaurant):
-            return (
-                restaurant['score'],  # sort by score (descending)
-                restaurant['rating'],  # sort by rating (descending)
-                restaurant['distance_from_me'],  # sort by distance (descending)
-                -ord(restaurant['restaurant_name'][0])  # sort by restaurant name (ascending)
-            )
-
-        # sort the heap using the custom sorting function above
-        self.heap.sort(key=custom_sort_key, reverse=True)
-        return self.heap
-
-
-# method to load the restaurant data, process, and save top 10 results
-def process_top_restaurants(data):
+def process_top_restaurants(data: List[Dict]) -> List[Dict]:
     """
-    processes the restaurant data to find the top 10 restaurants based on the
-    calculated score, rating, distance, and name using a Min-Heap. The results
-    are saved to a JSON file.
-
-    param data: list of restaurant dictionaries
-    param max_size: mMaximum size of the heap (default is 10)
+    Main processing function
+    Time Complexity: O(N log K) where N is input size and K is max_size (10)
+    Space Complexity: O(K) where K is max_size (10)
     """
-
-    # initialize the MinHeap with the specified max size
     min_heap = MinHeap(MAX_SIZE)
 
-    # add each restaurant to the heap
+    # Process each restaurant: O(N log K)
     for restaurant in data:
         min_heap.add(restaurant)
 
-    # get the top 10 restaurants sorted by score, rating, distance, and name
-    top_restaurants = min_heap.get_top_k()
-
-    return top_restaurants
+    # Get final sorted result: O(K log K) where K = 10, so effectively O(1)
+    return min_heap.get_top_k()
 
 def save_results(top_restaurants, output_file):
     # save the top restaurants to topk_results.json file
