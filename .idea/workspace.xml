@@ -7,11 +7,8 @@
     <list default="true" id="d06f46af-2006-44a2-a970-2452a8daaf42" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.docker/Dockerfile_ProgramOne" beforeDir="false" afterPath="$PROJECT_DIR$/.docker/Dockerfile_ProgramOne" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.docker/Dockerfile_ProgramTwo" beforeDir="false" afterPath="$PROJECT_DIR$/.docker/Dockerfile_ProgramTwo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/program_one/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/program_one/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/program_two/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/program_two/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +78,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1729357715373</updated>
-      <workItem from="1729357719784" duration="33930000" />
+      <workItem from="1729357719784" duration="34530000" />
     </task>
     <servers />
   </component>

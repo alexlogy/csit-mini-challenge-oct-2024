@@ -6,17 +6,16 @@ LABEL github="https://github.com/alexlogy/"
 
 # Environment Variables
 ENV API_URL="https://u8whitimu7.execute-api.ap-southeast-1.amazonaws.com/prod"
-#ENV INPUT_FILE="/data/validated/validated_dataset.json"
-ENV OUTPUT_DIR="/data/output/"
+ENV OUTPUT_DIR="/workspace/"
 
-# Set working directory to /app
-WORKDIR /app
+# Set working directory to /workspace
+WORKDIR /workspace
 
 # Copy the code into the image
-COPY ../program_two /app
+COPY ../program_two /workspace
 
 # Installing Python Dependencies
-RUN mkdir -p /data && pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Entrypoint
 ENTRYPOINT ["python", "main.py"]

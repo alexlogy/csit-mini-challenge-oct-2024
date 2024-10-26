@@ -110,26 +110,14 @@ docker buildx build -f .docker/Dockerfile_ProgramTwo --push --platform linux/arm
 
 ### Program 1
 
-*For mac*
 ```bash
-docker run -it -v /tmp/data:/data alexlogy/csit-mini-challenge-oct-2024:program-one-latest
-```
-
-*For Windows*
-```bash
-docker run -it -v ${pwd}/data:/data alexlogy/csit-mini-challenge-oct-2024:program-one-latest
+docker run -it alexlogy/csit-mini-challenge-oct-2024:program-one-latest
 ```
 
 ### Program 2
 
-*For mac*
 ```bash
-docker run -it -v /tmp/data:/data alexlogy/csit-mini-challenge-oct-2024:program-two-latest
-```
-
-*For Windows*
-```bash
-docker run -it -v ${pwd}/data:/data alexlogy/csit-mini-challenge-oct-2024:program-two-latest
+docker run -it alexlogy/csit-mini-challenge-oct-2024:program-two-latest
 ```
 
 ## Test
